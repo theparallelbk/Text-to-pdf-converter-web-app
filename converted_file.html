@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to PDF Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .hero {
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            background-color: #343a40;
+            overflow: hidden;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            animation: slide 10s infinite alternate;
+        }
+        @keyframes slide {
+            0% { transform: translateY(0); opacity: 0; }
+            20% { opacity: 1; }
+            50% { transform: translateY(-20px); }
+            70% { opacity: 1; }
+            100% { transform: translateY(0); opacity: 0; }
+        }
+        .hero p {
+            font-size: 1.5rem;
+            animation: fade 10s infinite alternate;
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        @keyframes fade {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            50% { opacity: 1; }
+            70% { opacity: 0.5; }
+            100% { opacity: 0; }
+        }
+        .faq {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        footer {
+            background-color: #f8f9fa;
+            padding: 10px 0;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="text-center">
+        <h1>Convert Your Text to PDF Instantly</h1>
+        <p>Quick and Easy Text to PDF Converter</p>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <h2 class="text-center">Text to PDF Converter</h2>
+    <div class="mb-3">
+        <label for="textContent" class="form-label">Enter Text Below:</label>
+        <textarea class="form-control" id="textContent" rows="10" placeholder="Type or paste your text here..."></textarea>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" onclick="convertTextToPDF()">Convert to PDF</button>
+    </div>
+</div>
+
+<!-- FAQs Section -->
+<div class="container faq">
+    <h2>Frequently Asked Questions (FAQs)</h2>
+    <div>
+        <h5>1. How do I convert text to PDF?</h5>
+        <p>Simply enter your text in the text area and click the "Convert to PDF" button. Your PDF will be downloaded automatically.</p>
+    </div>
+    <div>
+        <h5>2. Can I convert large texts?</h5>
+        <p>Yes! The converter supports large texts and will create multi-page PDFs as necessary.</p>
+    </div>
+    <div>
+        <h5>3. Is this tool free to use?</h5>
+        <p>Absolutely! Our text to PDF converter is completely free.</p>
+    </div>
+    <div>
+        <h5>4. What formats are supported?</h5>
+        <p>Currently, you can input plain text, and it will be converted into a PDF format.</p>
+    </div>
+    <div>
+        <h5>5. Do I need to install anything?</h5>
+        <p>No, this tool is entirely web-based, and you don’t need to install any software.</p>
+    </div>
+</div>
+
+<!-- jsPDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+    async function convertTextToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const text = document.getElementById('textContent').value;
+
+        if (text.trim() === '') {
+            alert('Please enter some text to convert.');
+            return;
+        }
+
+        const pageHeight = doc.internal.pageSize.height; // Get the height of the PDF page
+        const margin = 10; // Margin from top
+        const lineHeight = 10; // Space between lines
+        const textLines = doc.splitTextToSize(text, doc.internal.pageSize.width - 20); // Split text to fit within margins
+
+        let y = margin; // Initial y position
+        textLines.forEach((line) => {
+            if (y + lineHeight > pageHeight - margin) { // Check if we need to add a new page
+                doc.addPage();
+                y = margin; // Reset y to top margin
+            }
+            doc.text(line, margin, y); // Add text line to PDF
+            y += lineHeight; // Move down for the next line
+        });
+
+        // Save the PDF with a specified name
+        doc.save('converted_text.pdf');
+    }
+</script>
+
+<footer>
+    <p>&copy; 2024 theparallelbk | Software Developer</p>
+</footer>
+
+</body>
+</html>
